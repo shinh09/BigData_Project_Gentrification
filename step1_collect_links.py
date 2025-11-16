@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# 네이버 블로그 검색 결과에서 '성수동 핫플' 해당 '일자'의 제목/링크를 수집하되,
-# CSV 저장은 '월별'로 통합 저장 (예: 2025-01 전체 → links_성수동_핫플_202501.csv)
+# 네이버 블로그 검색 결과에서 '성수동 명소' 해당 '일자'의 제목/링크를 수집하되,
+# CSV 저장은 '연도별'로 통합 저장 (예: 2025년 전체 → links_성수동_명소_2025.csv)
 
 import os, re, time, random
 import pandas as pd
@@ -13,8 +13,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 # ===== 설정 =====
 QUERY       = "성수동 명소"
-DATE_START  = datetime(2025, 1, 1)
-DATE_END    = datetime(2025, 1, 31)
+DATE_START  = datetime(2025, 1, 1)   # 시작일
+DATE_END    = datetime(2025, 12, 31) # 종료일 (연도 전체를 돌리고 싶으면 이렇게)
 SAVE_DIR    = "./data_html"
 WAIT_SEC    = 25
 PAUSE       = (0.8, 1.6)
@@ -23,8 +23,11 @@ SCROLL_STEPS= 4
 
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-def human_pause(a=1.0, b=2.0): time.sleep(random.uniform(a,b))
-def clean(s): return re.sub(r"\s+", " ", (s or "").strip())
+def human_pause(a=1.0, b=2.0):
+    time.sleep(random.uniform(a,b))
+
+def clean(s):
+    return re.sub(r"\s+", " ", (s or "").strip())
 
 def sanitize_for_fname(s: str) -> str:
     s = s.strip().replace(" ", "_")
@@ -184,46 +187,47 @@ def list_seeds_for_day(driver, day):
         dump_debug(driver, f"{sanitize_for_fname(QUERY)}_{day:%Y%m%d}_no_seeds")
     return seeds
 
-def save_month_csv(rows, month_key):
-    """rows: list of dicts(date,title,link), month_key: 'YYYYMM'"""
+def save_year_csv(rows, year_key):
+    """rows: list of dicts(date,title,link), year_key: 'YYYY'"""
     if not rows:
-        print(f"📦 {month_key}: 저장할 데이터 없음")
+        print(f"📦 {year_key}: 저장할 데이터 없음")
         return
     df = pd.DataFrame(rows, columns=["date", "title", "link"])
-    # 월 단위 중복 제거 (link 기준)
+    # 연 단위 중복 제거 (link 기준)
     before = len(df)
     df = df.drop_duplicates(subset=["link"]).reset_index(drop=True)
     after = len(df)
-    print(f"🧹 {month_key}: 중복 제거 {before-after}건 → 최종 {after}건")
+    print(f"🧹 {year_key}: 중복 제거 {before-after}건 → 최종 {after}건")
 
     qslug = sanitize_for_fname(QUERY)
-    out_path = os.path.join(SAVE_DIR, f"links_{qslug}_{month_key}.csv")
+    out_path = os.path.join(SAVE_DIR, f"links_{qslug}_{year_key}.csv")
     df.to_csv(out_path, index=False, encoding="utf-8-sig")
-    print(f"✅ 월 통합 CSV 저장 → {out_path}")
+    print(f"✅ 연도 통합 CSV 저장 → {out_path}")
 
 def main():
     driver = build_driver()
     try:
         day = DATE_START
-        current_month_key = day.strftime("%Y%m")
-        month_rows = []  # 현재 월 누적 버퍼
+        current_year_key = day.strftime("%Y")  # '2025'
+        year_rows = []  # 현재 연도 누적 버퍼
 
         while day <= DATE_END:
-            day_month_key = day.strftime("%Y%m")
-            # 월이 바뀌면 이전 월 저장 후 리셋
-            if day_month_key != current_month_key:
-                save_month_csv(month_rows, current_month_key)
-                month_rows = []
-                current_month_key = day_month_key
+            day_year_key = day.strftime("%Y")
+
+            # 연도가 바뀌면 이전 연도 저장 후 버퍼 리셋
+            if day_year_key != current_year_key:
+                save_year_csv(year_rows, current_year_key)
+                year_rows = []
+                current_year_key = day_year_key
 
             # 일별 수집
             rows = list_seeds_for_day(driver, day)
-            month_rows.extend(rows)
+            year_rows.extend(rows)
 
             day += timedelta(days=1)
 
-        # 마지막 월 저장
-        save_month_csv(month_rows, current_month_key)
+        # 마지막 연도 저장
+        save_year_csv(year_rows, current_year_key)
 
     finally:
         driver.quit()
