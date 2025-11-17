@@ -12,8 +12,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # ===== 사용자 설정 =====
-LINKS_CSV   = "./data_html/links_성수동_명소_202501.csv"     # ← step1 결과 파일 (title, link[, date])
-SAVE_PATH   = "./data_html/blog_posts_성수동_명소_202501.csv" # ← 최종 저장 경로
+LINKS_CSV   = "./data_html/links_성수동_명소_2025.csv"     # ← step1 결과 파일 (title, link[, date])   
+SAVE_PATH   = "./data_html/blog_posts_성수동_명소_2025.csv" # ← 최종 저장 경로
 WAIT_SEC    = 30
 PAUSE       = (1.0, 2.0)
 PROBE_DEBUG = False   # True → 공감/댓글 셀렉터 탐지 로그 출력
