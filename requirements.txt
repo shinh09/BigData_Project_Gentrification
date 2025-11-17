@@ -1,0 +1,4 @@
+pandas==2.0.3
+selenium-wire==5.0.0
+undetected-chromedriver==3.5.5
+blinker==1.6.2
