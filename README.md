@@ -4,8 +4,8 @@
 - (pip은 내부 또는 외부 명령이 아닙니다)
 - py -m pip install pandas selenium selenium-wire undetected-chromedriver
 - py --version
-- py -m pip install pandas selenium selenium-wire undetected-chromedriver
-- 
+- py -m pip install --upgrade pip
+- py -m pip install pandas selenium undetected-chromedriver
 
 2.py -m pip --version
 - py -m pip install --upgrade pip
