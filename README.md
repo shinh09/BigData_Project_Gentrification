@@ -1,6 +1,6 @@
 (가상환경 활성화 선택사항)
-py -m venv .venv
-.venv\Scripts\activate
+- py -m venv .venv
+- .venv\Scripts\activate
 
 (설치 !!)
 - py -m pip install --upgrade pip
