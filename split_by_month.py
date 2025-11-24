@@ -14,13 +14,13 @@ import os
 import pandas as pd
 
 # ===== 설정 =====
-BASE_DIR   = "./data_html/익선동"           # CSV가 있는 폴더
-BASE_NAME  = "blog_posts_익선동_명소"  # 파일 이름 공통 부분
-YEAR       = 2025                 # 쪼갤 연도
+BASE_DIR   = "./data_html/성수동"           # CSV가 있는 폴더
+BASE_NAME  = "blog_posts_성수동_명소"  # 파일 이름 공통 부분
+YEAR       = 2023                 # 쪼갤 연도
 INPUT_FILE = os.path.join(BASE_DIR, f"{BASE_NAME}_{YEAR}.csv")
 
 # 월별 파일을 저장할 폴더 (그냥 BASE_DIR에 저장하고 싶으면 OUTPUT_DIR = BASE_DIR 로 바꿔도 됨)
-OUTPUT_DIR = f"./data_html/익선동/{YEAR}" 
+OUTPUT_DIR = f"./data_html/성수동/{YEAR}" 
 # ===============
 
 
